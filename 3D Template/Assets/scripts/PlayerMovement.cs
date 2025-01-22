@@ -13,17 +13,19 @@ public class PlayerMovement : MonoBehaviour
     public float gravity = 10f;
     public float lookSpeed = 2f;
     public float lookXLimit = 45f;
-    public float defaultHeight = 2f;
-    public float crouchHeight = 1f;
+    public float defaultHeight = 3f;
+    public float crouchHeight = 1.5f;
     public float crouchSpeed = 3f;
+    public float slide_Time = 0f;
 
     private Vector3 moveDirection = Vector3.zero;
     private float rotationX = 0;
     private CharacterController characterController;
 
     private bool IsSlideing = false;
-
+    public bool canslide = true;
     private bool canMove = true;
+    private bool crouched = false;
 
     void Start()
     {
@@ -43,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+        if (Input.GetButton("Jump") && canMove && characterController.isGrounded && canslide == true)
         {
             moveDirection.y = jumpPower;
         }
@@ -56,33 +58,58 @@ public class PlayerMovement : MonoBehaviour
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
-
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.C) && canMove)
-        {
-            characterController.height = crouchHeight;
-            Debug.Log("Is slideing");
-            while (Input.GetKey(KeyCode.LeftShift))
-            {
-                IsSlideing = true;
-            }
-            
-        }
-        else if (Input.GetKey(KeyCode.C) && !(Input.GetKey(KeyCode.LeftShift)) && canMove)
+        if (Input.GetKey(KeyCode.C) && !(Input.GetKey(KeyCode.LeftShift)) && canMove && characterController.isGrounded)
         {
             characterController.height = crouchHeight;
             walkSpeed = crouchSpeed;
             runSpeed = crouchSpeed;
+            crouched = true;
             Debug.Log("Is Crouching");
 
         }
-        else if(IsSlideing == false)
+        else if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.C) && canMove && canslide == true && characterController.isGrounded && !crouched == true)
+        {
+            characterController.height = crouchHeight;
+            Debug.Log("Is slideing");
+            IsSlideing = true;
+            canslide = false;
+
+            slide_Time = 2f;
+        }
+        if(slide_Time > 0)
+        {
+            slide_Time -= Time.deltaTime;
+        }
+        else if (!(Input.GetKey(KeyCode.C))) 
+        {
+            IsSlideing = false;
+        }
+
+        if (IsSlideing)
+        {
+            moveDirection *= Mathf.Lerp(1.25f, 0, (2 - slide_Time)/2);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            canslide = true;
+            IsSlideing = false;
+        }
+        
+        if (!(Input.GetKey(KeyCode.C)))
+        {
+            crouched = false;
+        }
+
+        if(IsSlideing == false && crouched == false)
         {
             characterController.height = defaultHeight;
             walkSpeed = 6f;
             runSpeed = 12f;
             Debug.Log("is normal");
+            canslide = true;
         }
 
+        
         characterController.Move(moveDirection * Time.deltaTime);
 
         if (canMove)
