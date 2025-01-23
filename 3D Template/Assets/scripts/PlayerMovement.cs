@@ -22,9 +22,10 @@ public class PlayerMovement : MonoBehaviour
     private float rotationX = 0;
     private CharacterController characterController;
 
+   
     private bool IsSlideing = false;
     public bool canslide = true;
-    private bool canMove = true;
+    public bool canMove = true;
     private bool crouched = false;
 
     void Start()
@@ -34,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
         Cursor.visible = false;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
@@ -58,47 +59,8 @@ public class PlayerMovement : MonoBehaviour
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.C) && !(Input.GetKey(KeyCode.LeftShift)) && canMove && characterController.isGrounded)
-        {
-            characterController.height = crouchHeight;
-            walkSpeed = crouchSpeed;
-            runSpeed = crouchSpeed;
-            crouched = true;
-            Debug.Log("Is Crouching");
 
-        }
-        else if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.C) && canMove && canslide == true && characterController.isGrounded && !crouched == true)
-        {
-            characterController.height = crouchHeight;
-            Debug.Log("Is slideing");
-            IsSlideing = true;
-            canslide = false;
-
-            slide_Time = 2f;
-        }
-        if(slide_Time > 0)
-        {
-            slide_Time -= Time.deltaTime;
-        }
-        else if (!(Input.GetKey(KeyCode.C))) 
-        {
-            IsSlideing = false;
-        }
-
-        if (IsSlideing)
-        {
-            moveDirection *= Mathf.Lerp(1.25f, 0, (2 - slide_Time)/2);
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            canslide = true;
-            IsSlideing = false;
-        }
         
-        if (!(Input.GetKey(KeyCode.C)))
-        {
-            crouched = false;
-        }
 
         if(IsSlideing == false && crouched == false)
         {
@@ -110,6 +72,55 @@ public class PlayerMovement : MonoBehaviour
         }
 
         
+        
+
+       
+    }
+
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.C) && !(Input.GetKey(KeyCode.LeftShift)) && canMove && characterController.isGrounded && slide_Time <= 0)
+        {
+            characterController.height = crouchHeight;
+            walkSpeed = crouchSpeed;
+            runSpeed = crouchSpeed;
+            crouched = true;
+            Debug.Log("Is Crouching");
+
+        }
+        else if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.C) && canMove && canslide == true && characterController.isGrounded && this.GetComponent<speed>().speedo >= 8)
+        {
+            characterController.height = crouchHeight;
+            Debug.Log("Is slideing");
+            IsSlideing = true;
+            canslide = false;
+
+            slide_Time = 2f;
+        }
+        if (slide_Time > 0)
+        {
+            slide_Time -= Time.deltaTime;
+        }
+        else if (!(Input.GetKey(KeyCode.C)))
+        {
+            IsSlideing = false;
+        }
+
+        if (IsSlideing)
+        {
+            moveDirection *= Mathf.Lerp(1.25f, 0, (2 - slide_Time) / 2);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            canslide = true;
+            IsSlideing = false;
+        }
+
+        if (!(Input.GetKey(KeyCode.C)))
+        {
+            crouched = false;
+        }
+
         characterController.Move(moveDirection * Time.deltaTime);
 
         if (canMove)
@@ -119,5 +130,6 @@ public class PlayerMovement : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
+
     }
 }
