@@ -6,9 +6,17 @@ using UnityEngine;
 public class firstPersonController : MonoBehaviour
 {
     public bool CanMove {  get; private set; } = true;
+    private bool IsSprinting => canSprint && Input.GetKey(sprintkey);
+
+    //Functional options 
+    [SerializeField] private bool canSprint = true;
+
+    //Controlls 
+    [SerializeField] private KeyCode sprintkey = KeyCode.LeftShift;
 
     //movement parameters
-    [SerializeField] private float walkspeed = 3.0f;
+    [SerializeField] private float Sprintspeed = 12.0f;
+    [SerializeField] private float walkspeed = 6.0f;
     [SerializeField] private float gravity = 30.0f;
 
     //camera movement 
@@ -47,7 +55,7 @@ public class firstPersonController : MonoBehaviour
 
     private void HandleMovementInput()
     {
-        currentInput = new Vector2(walkspeed * Input.GetAxis("Vertical"), walkspeed * Input.GetAxis("Horizontal"));
+        currentInput = new Vector2((IsSprinting ? Sprintspeed :  walkspeed) * Input.GetAxis("Vertical"), walkspeed * Input.GetAxis("Horizontal"));
 
         float moveDirectionY = moveDirection.y;
         moveDirection = (transform.TransformDirection(Vector3.forward) * currentInput.x) + (transform.TransformDirection(Vector3.right) * currentInput.y);
