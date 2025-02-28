@@ -387,7 +387,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1665546488}
   - component: {fileID: 1665546487}
-  - component: {fileID: 1665546486}
+  - component: {fileID: 1665546489}
   m_Layer: 0
   m_Name: CharacterController
   m_TagString: Untagged
@@ -395,27 +395,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1665546486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1665546485}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa435358d1565684aa277a67ac8a2851, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canSprint: 1
-  sprintkey: 304
-  Sprintspeed: 12
-  walkspeed: 6
-  gravity: 30
-  lookSpeedX: 5
-  lookSpeedY: 5
-  upperLookLimit: 80
-  lowerLookLimit: 80
 --- !u!143 &1665546487
 CharacterController:
   m_ObjectHideFlags: 0
@@ -457,6 +436,30 @@ Transform:
   - {fileID: 1605452903}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1665546489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665546485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8df563937080ac649b0f6a9d3feb2d7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 0}
+  walkSpeed: 6
+  runSpeed: 12
+  jumpPower: 7
+  gravity: 10
+  lookSpeed: 2
+  lookXLimit: 45
+  defaultHeight: 3
+  crouchHeight: 1.5
+  crouchSpeed: 3
+  slide_Time: 0
+  canslide: 1
 --- !u!1 &1971106345
 GameObject:
   m_ObjectHideFlags: 0
